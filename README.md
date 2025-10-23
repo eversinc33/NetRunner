@@ -14,7 +14,7 @@ A .NET assembly tracer using [Harmony](https://github.com/pardeike/Harmony) for 
 ## Features
 
 - Runtime method tracing
-- Support for both local assembly methods as well as referenced methods
+- Automatically traces all local assembly methods, supports external/referenced methods through a config file
 - Logging of method calls, returns, arguments and return values
 - Dumps reflectively loaded assemblies for analysis
 - Optional stack trace logging
