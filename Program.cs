@@ -61,11 +61,11 @@ namespace NetRunner
                 {
                     methodsFile = args[++i];
                 }
-                if (args[i] == "--no-locals")
+                else if (args[i] == "--no-locals")
                 {
                     PatchLocals = false;
                 }
-                if (args[i] == "--no-references")
+                else if (args[i] == "--no-references")
                 {
                     PatchReferences = false;
                 }
