@@ -34,6 +34,8 @@ Options:
 - `--log file.log`: Optional custom log file path (default: `./tracer.log`)
 - `--stack`: Enable stack trace logging for each method call
 - `assembly.dll`: Target assembly to analyze
+- `--no-locals`: Do not patch local methods in the target assembly
+- `--no-references`: Do not patch referenced external methods
 - `Namespace.Class::Method`: Entry point method to invoke (optional)
 
 ### Methods File Format

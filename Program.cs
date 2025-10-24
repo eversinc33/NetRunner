@@ -24,6 +24,8 @@ namespace NetRunner
         private static readonly object LogLock = new object();
         private static string LogPath;
         public static bool ShowStack = false;
+        public static bool PatchLocals = true;
+        public static bool PatchReferences = true;
 
         private static readonly string[] BannedNamespaces = {
             "System",
@@ -58,6 +60,14 @@ namespace NetRunner
                 if (args[i] == "--methods" && i + 1 < args.Length)
                 {
                     methodsFile = args[++i];
+                }
+                if (args[i] == "--no-locals")
+                {
+                    PatchLocals = false;
+                }
+                if (args[i] == "--no-references")
+                {
+                    PatchReferences = false;
                 }
                 else if (args[i] == "--log" && i + 1 < args.Length)
                 {
@@ -97,6 +107,12 @@ namespace NetRunner
             if (methodsFile != null && !File.Exists(methodsFile))
             {
                 Console.WriteLine($"[!] Methods file {methodsFile} does not exist");
+                return 1;
+            }
+
+            if (PatchLocals && PatchReferences && methodsFile == null)
+            {
+                Console.WriteLine($"[!] --no-locals and --no-references cannot be used without --methods");
                 return 1;
             }
 
@@ -149,19 +165,25 @@ namespace NetRunner
             new Harmony("net.tracer.loadhook").Patch(loadBytes, prefix);
 
             // Referenced methods
-            var refs = GetReferencedMethods(asmPath);
-            foreach (var name in asm.GetReferencedAssemblies())
+            if (PatchReferences)
             {
-                try
+                var refs = GetReferencedMethods(asmPath);
+                foreach (var name in asm.GetReferencedAssemblies())
                 {
-                    var dep = Assembly.Load(name);
-                    PatchReferencedMethods(harmony, dep, refs);
+                    try
+                    {
+                        var dep = Assembly.Load(name);
+                        PatchReferencedMethods(harmony, dep, refs);
+                    }
+                    catch { }
                 }
-                catch { }
             }
 
             // Internal methods
-            PatchAssemblyMethods(asm, harmony, patchPrefix, patchPostfixVoid, patchPostfixResult);
+            if (PatchLocals)
+            {
+                PatchAssemblyMethods(asm, harmony, patchPrefix, patchPostfixVoid, patchPostfixResult);
+            }
 
             // Handle methods file if provided
             if (methodsFile != null)
@@ -248,10 +270,12 @@ namespace NetRunner
         /// </summary>
         static void ShowUsage()
         {
-            Console.WriteLine("Usage:\nNetRunner.exe [--methods methodsFile.txt] [--log logFile.log] [--stack] assembly.dll [Namespace.Class::Method]\n");
+            Console.WriteLine("Usage:\nNetRunner.exe [--<params>] assembly.dll [Namespace.Class::Method]\n");
             Console.WriteLine("--methods file.txt      : Optional file containing additional methods to trace");
             Console.WriteLine("--log file.log          : Optional custom log file path(default: `./ tracer.log`)");
             Console.WriteLine("--stack                 : Enable stack trace logging for each method call");
+            Console.WriteLine("--no-locals             : Do not patch local methods in the target assembly");
+            Console.WriteLine("--no-references         : Do not patch referenced external methods");
             Console.WriteLine("assembly.dll            : Target assembly to analyze");
             Console.WriteLine("Namespace.Class::Method : Entry point method to invoke(optional)");
         }
