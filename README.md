@@ -54,6 +54,8 @@ System.Reflection.Assembly::Load
 Be careful hooking methods that are used by the tracer itself as that can result in deadly recursion loops.
 Lines starting with `#` are treated as comments and ignored.
 
+An example configuration file can be found at [./Methods.txt](./Methods.txt).
+
 ## Development
 
 ### Windows

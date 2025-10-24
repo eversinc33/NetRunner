@@ -1,0 +1,31 @@
+# Environment
+System.Environment::GetFolderPath
+# File
+System.IO.File::Delete
+System.IO.File::Exists
+System.IO.File::Create
+System.IO.File::SetCreationTime
+System.IO.File::SetLastAccessTime
+System.IO.File::SetLastWriteTime
+# Directory
+System.IO.Directory::GetFiles
+System.IO.Directory::GetDirectories
+System.IO.Directory::SetCreationTime
+System.IO.Directory::SetLastAccessTime
+System.IO.Directory::SetLastWriteTime
+# Path
+System.IO.Path::GetTempFileName
+# Thread
+System.Threading.Thread::Sleep
+# Assembly
+System.Reflection.Assembly::Load
+# Action
+System.Action::Invoke
+# Buffer
+System.Buffer::BlockCopy
+# Delegate
+System.Delegate::CreateDelegate
+System.Delegate::DynamicInvoke
+# Encoding
+System.Text.Encoding::GetBytes
+System.Text.Encoding::GetString
